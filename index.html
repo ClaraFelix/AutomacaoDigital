@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AutoInspect | Desafio de Automação Digital</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">AI</div>
+          <div>
+            <strong>AutoInspect</strong>
+            <span>Controle de Qualidade</span>
+          </div>
+        </div>
+
+        <nav class="nav-tabs" aria-label="Seções do sistema">
+          <button class="nav-tab active" data-tab="operacao" type="button">
+            Operação
+          </button>
+          <button class="nav-tab" data-tab="pecas" type="button">Peças</button>
+          <button class="nav-tab" data-tab="caixas" type="button">
+            Caixas
+          </button>
+          <button class="nav-tab" data-tab="relatorio" type="button">
+            Relatório
+          </button>
+          <button class="nav-tab" data-tab="sobre" type="button">
+            Sobre o Projeto
+          </button>
+        </nav>
+
+        <div class="system-panel">
+          <span class="status-dot"></span>
+          <div>
+            <strong>Sistema Online</strong>
+            <span>Inspeção em tempo real</span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="dashboard">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Algoritmos e Lógica de Programação — UniFECAF</p>
+            <h1>Desafio de Automação Digital</h1>
+          </div>
+          <div class="clock-card">
+            <span>Capacidade Caixa</span>
+            <strong>10 Peças</strong>
+          </div>
+        </header>
+
+        <!-- ABA 1: OPERAÇÃO -->
+        <section class="tab-panel active" id="operacao">
+          <div class="kpi-grid">
+            <article class="kpi-card">
+              <span>Aprovadas</span>
+              <strong id="approvedKpi">0</strong>
+            </article>
+            <article class="kpi-card danger">
+              <span>Reprovadas</span>
+              <strong id="rejectedKpi">0</strong>
+            </article>
+            <article class="kpi-card">
+              <span>Caixas usadas</span>
+              <strong id="boxesKpi">0</strong>
+            </article>
+            <article class="kpi-card">
+              <span>Taxa de aprovação</span>
+              <strong id="approvalRateKpi">0%</strong>
+            </article>
+          </div>
+
+          <div class="main-grid">
+            <section class="panel">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">Entrada de Dados</p>
+                  <h2>Cadastro de Peça</h2>
+                </div>
+              </div>
+
+              <form id="partForm" class="part-form" novalidate>
+                <label>
+                  ID da Peça
+                  <input
+                    id="partId"
+                    name="partId"
+                    type="text"
+                    placeholder="Ex: P-001"
+                    autocomplete="off"
+                    required
+                  />
+                </label>
+
+                <label>
+                  Peso (g) — [Ideal: 95g a 105g]
+                  <input
+                    id="weight"
+                    name="weight"
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    placeholder="Ex: 100"
+                    required
+                  />
+                </label>
+
+                <label>
+                  Cor — [Validadas: azul ou verde]
+                  <input
+                    id="color"
+                    name="color"
+                    type="text"
+                    placeholder="Ex: azul"
+                    required
+                  />
+                </label>
+
+                <label>
+                  Comprimento (cm) — [Ideal: 10cm a 20cm]
+                  <input
+                    id="length"
+                    name="length"
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    placeholder="Ex: 15"
+                    required
+                  />
+                </label>
+
+                <button class="primary-button" type="submit">
+                  Cadastrar e Inspecionar Peça
+                </button>
+              </form>
+            </section>
+
+            <section class="panel quality-panel">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">Diagnóstico</p>
+                  <h2>Proporção de Qualidade</h2>
+                </div>
+              </div>
+              <div class="chart-wrap">
+                <div
+                  class="donut"
+                  id="qualityDonut"
+                  role="img"
+                  aria-label="Gráfico de aprovadas e reprovadas"
+                ></div>
+                <div class="chart-legend">
+                  <span><i class="legend approved"></i>Aprovadas</span>
+                  <span><i class="legend rejected"></i>Reprovadas</span>
+                </div>
+              </div>
+              <div class="latest-result" id="latestResult">
+                Nenhuma peça inspecionada ainda.
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <!-- ABA 2: PEÇAS -->
+        <section class="tab-panel" id="pecas">
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Histórico</p>
+                <h2>Peças Inspecionadas</h2>
+              </div>
+              <select id="statusFilter" aria-label="Filtrar por status">
+                <option value="todas">Todas</option>
+                <option value="APROVADA">Aprovadas</option>
+                <option value="REPROVADA">Reprovadas</option>
+              </select>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Peso</th>
+                    <th>Cor</th>
+                    <th>Comprimento</th>
+                    <th>Status</th>
+                    <th>Motivo da Reprovação</th>
+                    <th>Ação</th>
+                  </tr>
+                </thead>
+                <tbody id="partsTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <!-- ABA 3: CAIXAS -->
+        <section class="tab-panel" id="caixas">
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Armazenamento</p>
+                <h2>Controle de Caixas (10 Peças por Caixa)</h2>
+              </div>
+            </div>
+            <div class="boxes-grid" id="boxesGrid"></div>
+          </section>
+        </section>
+
+        <!-- ABA 4: RELATÓRIO -->
+        <section class="tab-panel" id="relatorio">
+          <div class="report-grid">
+            <section class="panel">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">Indicadores</p>
+                  <h2>Relatório Consolidador</h2>
+                </div>
+              </div>
+              <div class="metric-list">
+                <div>
+                  <span>Total de peças aprovadas</span
+                  ><strong id="reportApproved">0</strong>
+                </div>
+                <div>
+                  <span>Total de peças reprovadas</span
+                  ><strong id="reportRejected">0</strong>
+                </div>
+                <div>
+                  <span>Quantidade total de caixas utilizadas</span
+                  ><strong id="reportBoxes">0</strong>
+                </div>
+                <div>
+                  <span>Total de peças cadastradas</span
+                  ><strong id="reportTotal">0</strong>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">Não Conformidades</p>
+                  <h2>Detalhamento das Reprovações</h2>
+                </div>
+              </div>
+              <ul class="reason-list" id="reasonList"></ul>
+            </section>
+          </div>
+        </section>
+
+        <!-- ABA 5: ENTREGÁVEL TEÓRICO -->
+        <section class="tab-panel" id="sobre">
+          <section class="panel theory-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Entregável Teórico — Análise e Discussão</p>
+                <h2>Documentação do Projeto Acadêmico</h2>
+              </div>
+            </div>
+
+            <div class="theory-grid">
+              <article>
+                <h3>1. Contextualização da Automação</h3>
+                <p>
+                  A automação industrial substitui a inspeção manual por regras
+                  digitais padronizadas, eliminando gargalos de tempo, erros de
+                  conferência e custos operacionais. Garante auditabilidade
+                  total e controle de qualidade em linhas de montagem contínuas.
+                </p>
+              </article>
+              <article>
+                <h3>2. Estrutura Lógica</h3>
+                <p>
+                  O sistema baseia-se em estruturas condicionais encadeadas para
+                  validação de múltiplos parâmetros (peso, cor, comprimento) e
+                  armazenamento dinâmico de inconsistências. A alocação em
+                  caixas de 10 unidades utiliza divisão inteira e operador de
+                  resto para encerramento de lote.
+                </p>
+              </article>
+              <article>
+                <h3>3. Benefícios e Desafios</h3>
+                <p>
+                  <strong>Benefícios:</strong> Decisão em milissegundos,
+                  relatórios em tempo real e rastreabilidade total de não
+                  conformidades. <br /><strong>Desafios:</strong> Tratar
+                  entradas inválidas de dados e manter o recálculo reativo das
+                  caixas ao remover peças.
+                </p>
+              </article>
+              <article>
+                <h3>4. Reflexão Futura & Visão Industrial</h3>
+                <p>
+                  Este protótipo pode ser expandido integrando sensores IoT
+                  (balança serial), câmeras operando com Visão Computacional
+                  (IA) para identificação automática de cor/dimensão e
+                  comunicação com CLPs industriais para descarte automático na
+                  esteira.
+                </p>
+              </article>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
